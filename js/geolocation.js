@@ -3,13 +3,9 @@ function getMylocation(){
 	var climas;
 if (navigator.geolocation){
   	navigator.geolocation.getCurrentPosition(function(position) {
-  	var latitude = position.coords.latitude;
-	var longitude = position.coords.longitude;
-    document.getElementById('data').innerHTML="latitude: "+ position.coords.latitude + "<br>longitude: " + position.coords.longitude;
-    var img = new Image();
-    img.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false";
-
-    data.appendChild(img);
+  	latitude = position.coords.latitude;
+	longitude = position.coords.longitude;
+    getWeatherData(latitude,longitude);	
   }, errorHandler);
 }
 	function errorHandler(error){
@@ -29,4 +25,14 @@ if (navigator.geolocation){
 		var message = document.getElementById("data");
 		message.innerHTML = errorMessage;
 	}
+}
+
+function getWeatherData(lat, lon){
+	var apiURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&APPID=8c483ac0ba0e00a23f343af80fbc493a";
+	$.getJSON(apiURL, function (response){
+		console.log(response);
+		var dataDiv = document.getElementById('data');
+		dataDiv.innerHTML = response.name;
+		dataDiv.innerHTML += response.weather[0].id;
+	});
 }
