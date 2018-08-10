@@ -1,53 +1,70 @@
+/*
+Params = openweather API Object
+*/
+function WeatherData(params){
+		this.cityName = params.name;
+		this.kelvin = params.main.temp;
+		this.weather = params.weather[0].main;
+		this.getCelcius = function(){
+			var celcius = Math.round(this.kelvin - 273.15);
+			return celcius += "°C";
+		}
+		this.getFarenheit = function(){
+			var farenheit = Math.round(9 * (this.kelvin - 273.15) / 5 + 32);
+			return farenheit += "°F";			
+		}
+
+	}
+
+//Global weather object for use in the program
+
+var weatherObject;
+
 $(document).ready(function(){
-		if (navigator.geolocation){
-	  	navigator.geolocation.getCurrentPosition(function(position) {
+	if (navigator.geolocation){
+  		navigator.geolocation.getCurrentPosition(function(position) {
 	  	latitude = position.coords.latitude;
 		longitude = position.coords.longitude;
-	    getWeatherData(latitude,longitude);	
+	    getWeatherData(latitude,longitude);
+	    var responseData = `<h2>${weatherObject.cityName}</h2> <h2 id = "degrees" >${weatherObject.getCelcius()}</h2>`;
+		$("#data").append(responseData);
+		$("#data h2").addClass("text-center text-white");
+		viewWeather(weatherObject.weather);
 	  }, errorHandler);
 	}
 
-	function errorHandler(error){
-		var errorTypes = {
-			0 : "Unknown Error",
-			1 : "Permission denied by user",
-			2 : "Position is not available",
-			3 : "Request timed out"
-		};
+	
 
-		var errorMessage = errorTypes[error.code];
+});
 
-		if(error.code == 0 || error.code == 2) {
-			errorMessage = errorMessage + " " + error.message;
-		}
+function errorHandler(error){
+	var errorTypes = {
+		0 : "Unknown Error",
+		1 : "Permission denied by user",
+		2 : "Position is not available",
+		3 : "Request timed out"
+	};
 
-		alert(errorMessage);
+	var errorMessage = errorTypes[error.code];
+
+	if(error.code == 0 || error.code == 2) {
+		errorMessage = errorMessage + " " + error.message;
 	}
 
-	$("#degrees").click(function(){
-		if ($(this).value.indexOf("C") !== -1) {
-			
-		}
-	})
-});
+	alert(errorMessage);
+}
 
 function getWeatherData(lat, lon){
 	var apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=8c483ac0ba0e00a23f343af80fbc493a`;
 	$.getJSON(apiURL, function (response){
-		var cityName = response.name;
-		var celcius = Math.round(response.main.temp - 273.15);
-		var farenheit = Math.round(9*(response.main.temp-273.15)/5+32);
-		var responseData = `<h2>${cityName}</h2> <h2 id = "degrees" >${celcius}°C</h2>`;
-		$("#data").append(responseData);
-		$("#data h2").addClass("text-center text-white");
-		viewWeather(response.weather[0].main);
+		weatherObject = new WeatherData(response);
 	});
 }
-
-function viewWeather(weather){
+//Function for getting render the icon based on the weather
+function viewWeather(weatherConditions){
 	$("#data").append("<h1><i></i></h1>");
 	var icon;
-	switch(weather)
+	switch(weatherConditions)
 	{
 		case "Clear":
 			icon = "fas fa-sun";
