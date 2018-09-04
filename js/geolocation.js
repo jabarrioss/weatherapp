@@ -3,9 +3,9 @@ $(document).ready(function(){
 	function initialize(){
 		if (navigator.geolocation){
   			navigator.geolocation.getCurrentPosition(function(position){
-		  	latitude = position.coords.latitude;
-			longitude = position.coords.longitude;
-			getWeatherData(latitude,longitude);
+		  	const LATITUDE = position.coords.latitude;
+			const LONGITUDE = position.coords.longitude;
+			getWeatherData(LATITUDE,LONGITUDE);
 	  		}, errorHandler);
 		}
 
@@ -29,7 +29,7 @@ $(document).ready(function(){
 	}
 
 	function getWeatherData(lat, lon){
-		var apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=8c483ac0ba0e00a23f343af80fbc493a`;
+		let apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=8c483ac0ba0e00a23f343af80fbc493a`;
 		$.getJSON(apiURL, function (response){
 			weatherObject = new WeatherData(response);
 			var responseData = `<h2>${weatherObject.cityName}</h2> <h2 id = "degrees" >${weatherObject.getCelcius()}</h2>`;
@@ -39,14 +39,14 @@ $(document).ready(function(){
 		});
 	}
 	function errorHandler(error){
-	var errorTypes = {
+	let errorTypes = {
 		0 : "Unknown Error",
 		1 : "Permission denied by user",
 		2 : "Position is not available",
 		3 : "Request timed out"
 	};
 
-	var errorMessage = errorTypes[error.code];
+	let errorMessage = errorTypes[error.code];
 
 	if(error.code == 0 || error.code == 2) {
 		errorMessage = errorMessage + " " + error.message;
