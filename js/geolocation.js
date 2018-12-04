@@ -1,3 +1,13 @@
+var weatherIcons = {
+	"Clear" : "fas fa-sun",
+	 "Rain" : "fas fa-cloud",
+	 "Clouds" : "fas fa-cloud",
+	 "Drizzle" : "fas fa-cloud",			
+	 "Thunderstorm":"fas fa-bolt",
+	 "Snow" : "fas fa-snowflake",
+	"default" : "text-danger fas fa-frown"
+};
+
 $(document).ready(function(){
 	
 	function initialize(){
@@ -29,7 +39,7 @@ $(document).ready(function(){
 	}
 
 	function getWeatherData(lat, lon){
-		let apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=8c483ac0ba0e00a23f343af80fbc493a`;
+		let apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=5d0331d48aeb29456aab442abfd15aee`;
 		$.getJSON(apiURL, function (response){
 			weatherObject = new WeatherData(response);
 			var responseData = `<h2>${weatherObject.cityName}</h2> <h2 id = "degrees" >${weatherObject.getCelcius()}</h2>`;
@@ -57,32 +67,7 @@ $(document).ready(function(){
 	//Function for getting render the icon based on the weather
 	function viewWeather(weatherConditions){
 		$("#data").append("<h1><i></i></h1>");
-		var icon;
-		switch(weatherConditions)
-		{
-			case "Clear":
-				icon = "fas fa-sun";
-			break;
-
-			case "Rain":
-			case "Clouds":
-			case "Drizzle":
-				icon = "fas fa-cloud";
-			break;
-
-			case "Thunderstorm":
-				icon = "fas fa-bolt";
-			break;
-
-			case "Snow":
-				icon = "fas fa-snowflake";
-			break;
-
-			default:
-				icon = "text-danger fas fa-frown";
-			break;
-		}
-
+		var icon = weatherIcons[weatherConditions];		
 		$("#data h1 i").addClass(icon);
 		
 	}
