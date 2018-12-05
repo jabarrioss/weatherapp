@@ -68,6 +68,7 @@ $(document).ready(function(){
 	function viewWeather(weatherConditions){
 		$("#data").append("<h1><i></i></h1>");
 		var icon = weatherIcons[weatherConditions];
+
 		$("#data h1 i").addClass(icon);
 		
 	}
