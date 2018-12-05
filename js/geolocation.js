@@ -40,13 +40,35 @@ $(document).ready(function(){
 
 	function getWeatherData(lat, lon){
 		var apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=5d0331d48aeb29456aab442abfd15aee`;
-		$.getJSON(apiURL, function (response){
-			weatherObject = new WeatherData(response);
-			var responseData = `<h2>${weatherObject.cityName}</h2> <h2 id = "degrees" >${weatherObject.getCelcius()}</h2>`;
-			$("#data").append(responseData);
-			$("#data h2").addClass("text-center text-white");
-			viewWeather(weatherObject.weather);
+		$.ajax({
+			url:apiURL,
+			success: function(response){
+				weatherObject = new WeatherData(response);
+				var responseData = `<h2>${weatherObject.cityName}</h2> <h2 id = "degrees" >${weatherObject.getCelcius()}</h2>`;
+				$("#data").append(responseData);
+				$("#data h2").addClass("text-center text-white");
+				viewWeather(weatherObject.weather);
+			},
+
+			complete: function(){
+				$("#loading").empty();
+			},
+
+			statusCode: {
+				404: function(){
+					alert("page not found");
+				},
+				403: function(){
+					alert("access forbidden");
+				},
+				401: function(){
+					alert("access unathorized");
+				}
+			}
+
 		});
+
+		console.log("I'm being called");
 	}
 	function errorHandler(error){
 	let errorTypes = {
@@ -65,9 +87,9 @@ $(document).ready(function(){
 	alert(errorMessage);
 }
 	//Function for getting render the icon based on the weather
-	function viewWeather(weatherConditions){
+	function viewWeather(weatherCondition){
 		$("#data").append("<h1><i></i></h1>");
-		var icon = weatherIcons[weatherConditions];
+		var icon = weatherIcons[weatherCondition];
 
 		$("#data h1 i").addClass(icon);
 		
